@@ -14,6 +14,9 @@ public:
     std::vector<std::string> get_watch_history() const;
 
 private:
+    std::string m_full_name;
+    std::string m_email;
+    std::vector<std::string> m_watch_history;
 };
 
 #endif // USER_INCLUDED

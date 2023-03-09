@@ -19,6 +19,15 @@ public:
     std::vector<std::string> get_genres() const;
 
 private:
+    std::string m_id;
+    std::string m_title;
+    std::string m_release_year;
+    float m_rating;
+    std::vector<std::string> m_directors;
+    std::vector<std::string> m_actors;
+    std::vector<std::string> m_genres;
+
+    std::vector<std::string> string_to_vector( const std::string &input );
 };
 
 #endif // MOVIE_INCLUDED

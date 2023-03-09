@@ -1,6 +1,8 @@
 #ifndef TREEMULTIMAP_INCLUDED
 #define TREEMULTIMAP_INCLUDED
 
+#include <map>
+
 template <typename KeyType, typename ValueType>
 class TreeMultimap
 {
@@ -15,17 +17,21 @@ public:
 
         ValueType& get_value() const
         {
-            throw 1;  // Replace this line with correct code.
+            return m_map[it];  // Replace this line with correct code.
         }
 
         bool is_valid() const
         {
-            return false;  // Replace this line with correct code.
+            // Replace this line with correct code.
+            if (it == m_map.end())
+                return false;
+            else
+                return true;
         }
 
         void advance()
         {
-            // Replace this line with correct code.
+            it++; // Replace this line with correct code.
         }
 
     private:
@@ -33,7 +39,7 @@ public:
 
     TreeMultimap()
     {
-        // Replace this line with correct code.
+        it = m_map.begin()  // Replace this line with correct code.
     }
 
     ~TreeMultimap()
@@ -43,7 +49,7 @@ public:
 
     void insert(const KeyType& key, const ValueType& value)
     {
-        // Replace this line with correct code.
+        m_map[key] = value; // Replace this line with correct code.
     }
 
     Iterator find(const KeyType& key) const
@@ -52,6 +58,12 @@ public:
     }
 
 private:
+    map<KeyType, ValueType> m_map;
+    map<KeyType, ValueType>::iterator it;
 };
 
 #endif // TREEMULTIMAP_INCLUDED
+
+// show content:
+//for (std::map<char, int>::iterator it = mymap.begin(); it != mymap.end(); ++it)
+//std::cout << it->first << " => " << it->second << '\n';
