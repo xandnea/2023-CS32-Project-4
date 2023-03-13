@@ -25,6 +25,8 @@ using namespace std;
 const string USER_DATAFILE = "users.txt";
 const string MOVIE_DATAFILE = "movies.txt";
 
+#include "treemm.h"
+
 int main()
 {
 	UserDatabase udb;
@@ -33,6 +35,9 @@ int main()
 		cout << "Failed to load user data file " << USER_DATAFILE << "!" << endl;
 		return 1;
 	}
+	
+	udb.load("users.txt");
+
 	for (;;)
 	{
 		cout << "Enter user email address (or quit): ";

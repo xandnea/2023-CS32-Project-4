@@ -6,6 +6,7 @@ using namespace std;
 
 User::User(const string& full_name, const string& email,
     const vector<string>& watch_history)
+    //: m_full_name(full_name), m_email(email), m_watch_history(watch_history)
 {
     m_full_name = full_name;
     m_email = email;
