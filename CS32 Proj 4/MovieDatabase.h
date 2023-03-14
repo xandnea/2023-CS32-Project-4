@@ -25,7 +25,8 @@ private:
     TreeMultimap<std::string, Movie*> m_actors;
     TreeMultimap<std::string, Movie*> m_genres;
 
-    void insert_to_tmm(TreeMultimap<std::string, Movie*> tmm, std::string, Movie* movie);
+    void insert_to_tmm(TreeMultimap<std::string, Movie*>& tmm, std::string, Movie* movie);
+    std::string to_lower(const std::string& input);
 };
 
 #endif // MOVIEDATABASE_INCLUDED

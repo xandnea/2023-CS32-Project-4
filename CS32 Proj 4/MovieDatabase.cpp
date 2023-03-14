@@ -8,6 +8,8 @@
 
 using namespace std;
 
+string to_lower(const string& input);
+
 MovieDatabase::MovieDatabase()
 {
     
@@ -28,49 +30,57 @@ bool MovieDatabase::load(const string& filename)
     string directors = "";
     string actors = "";
     string genres = "";
-    float rating = 0;
+    float rating = -1;
 
     string s;
     while (getline(infile, s)) // can be optimized if needed
     {
-        if (s.at(0) == 'I' && s.at(1) == 'D' && id == "") // if id
+        if (id == "") // if id
         {
             id = s;
+            //cout << id << endl;
             continue; // next line
         }
         else if (title  == "") // if title
         {
             title = s;
+            //cout << title << endl;
             continue; // next line
         }
-        else if (isdigit(s.at(0)) && s.at(1) != '.' && year == "") // if year
+        else if (year == "") // if year
         {
             year = s;
+            //cout << year << endl;
             continue;
         }
         else if (directors == "") // if directors
         {
-            directors = s;
+            directors = to_lower(s);
+            //cout << directors << endl;
             continue;
         }
         else if (actors == "") // if actors
         {
-            actors = s;
+            actors = to_lower(s);
+            //cout << actors << endl;
             continue;
         }
         else if (genres == "") // if genres
         {
-            genres = s;
+            genres = to_lower(s);
+            //cout << genres << endl;
             continue;
         }
-        else if (isdigit(s.at(0)) && rating == 0)
+        else if (rating == -1)
         {
             rating = stoi(s);
+            //cout << rating << endl;
             continue;
         }
-        else if (s == "\n") // if new line
+        else if (s == "") // if new line
         {
             Movie* movie = new Movie(id, title, year, directors, actors, genres, rating);
+            insert_to_tmm(m_movies, id, movie);
             insert_to_tmm(m_directors, directors, movie);
             insert_to_tmm(m_actors, actors, movie);
             insert_to_tmm(m_genres, genres, movie);
@@ -81,7 +91,7 @@ bool MovieDatabase::load(const string& filename)
             directors = "";
             actors = "";
             genres = "";
-            rating = 0;
+            rating = -1;
             continue;
         }
     }
@@ -91,14 +101,19 @@ bool MovieDatabase::load(const string& filename)
 
 Movie* MovieDatabase::get_movie_from_id(const string& id) const
 {
-    return m_movies.find(id).get_value();
+    if ((m_movies.find(id).is_valid()))
+        return m_movies.find(id).get_value();
+    else
+        return nullptr;
+    
 }
 
 vector<Movie*> MovieDatabase::get_movies_with_director(const string& director) const
 {
     string temp = director;
-    for (int i = 1; i < temp.size(); i++)
-        tolower(temp.at(i));
+
+    for (int i = 0; i < director.size(); i++)
+        temp.at(i) = tolower(temp.at(i));
 
     vector<Movie*> movies;
     TreeMultimap<string, Movie*>::Iterator it = m_directors.find(temp);
@@ -114,11 +129,12 @@ vector<Movie*> MovieDatabase::get_movies_with_director(const string& director) c
 vector<Movie*> MovieDatabase::get_movies_with_actor(const string& actor) const
 {
     string temp = actor;
-    for (int i = 1; i < temp.size(); i++)
-        tolower(temp.at(i));
+
+    for (int i = 0; i < actor.size(); i++)
+        temp.at(i) = tolower(temp.at(i));
 
     vector<Movie*> movies;
-    TreeMultimap<string, Movie*>::Iterator it = m_directors.find(temp);
+    TreeMultimap<string, Movie*>::Iterator it = m_actors.find(temp);
     while (it.is_valid())
     {
         movies.push_back(it.get_value());
@@ -131,11 +147,12 @@ vector<Movie*> MovieDatabase::get_movies_with_actor(const string& actor) const
 vector<Movie*> MovieDatabase::get_movies_with_genre(const string& genre) const
 {
     string temp = genre;
-    for (int i = 1; i < temp.size(); i++)
-        tolower(temp.at(i));
+
+    for (int i = 0; i < genre.size(); i++)
+        temp.at(i) = tolower(temp.at(i));
 
     vector<Movie*> movies;
-    TreeMultimap<string, Movie*>::Iterator it = m_directors.find(temp);
+    TreeMultimap<string, Movie*>::Iterator it = m_genres.find(temp);
     while (it.is_valid())
     {
         movies.push_back(it.get_value());
@@ -145,7 +162,7 @@ vector<Movie*> MovieDatabase::get_movies_with_genre(const string& genre) const
     return movies;
 }
 
-void MovieDatabase::insert_to_tmm(TreeMultimap<string, Movie*> tmm, string input, Movie* movie)
+void MovieDatabase::insert_to_tmm(TreeMultimap<string, Movie*>& tmm, string input, Movie* movie)
 {
     string s = input;
     string temp = "";
@@ -168,5 +185,14 @@ void MovieDatabase::insert_to_tmm(TreeMultimap<string, Movie*> tmm, string input
             temp = "";
         }
     }
+    tmm.insert(temp, movie);
     return;
+}
+
+string MovieDatabase::to_lower(const string& input)
+{
+    string temp = input;
+    for (int i = 0; i < input.size(); i++)
+        temp.at(i) = tolower(temp.at(i));
+    return temp;
 }

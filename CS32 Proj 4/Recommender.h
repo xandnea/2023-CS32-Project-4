@@ -3,9 +3,11 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 class UserDatabase;
 class MovieDatabase;
+class Movie;
 
 struct MovieAndRank
 {
@@ -26,6 +28,11 @@ public:
         int movie_count);
 
 private:
+    const UserDatabase* m_userdata; // might need to be a pointer
+    const MovieDatabase* m_moviedata;
+
+    std::vector<MovieAndRank> sortByRating(std::vector<MovieAndRank>& input);
+    std::vector<MovieAndRank> sortByTitle(std::vector<MovieAndRank>& input);
 };
 
 #endif // RECOMMENDER_INCLUDED

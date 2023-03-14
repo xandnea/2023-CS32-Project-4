@@ -1,16 +1,3 @@
-﻿  UserDatabase.cpp
-C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\treemm.h(26,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\treemm.h(22): message : while compiling class template member function 'TreeMultimap<std::string,User *>::Iterator::Iterator(const KeyType &,std::vector<ValueType,std::allocator<ValueType>> &)'
-          with
-          [
-              KeyType=std::string,
-              ValueType=User *
-          ]
-C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\treemm.h(118): message : see reference to function template instantiation 'TreeMultimap<std::string,User *>::Iterator::Iterator(const KeyType &,std::vector<ValueType,std::allocator<ValueType>> &)' being compiled
-          with
-          [
-              KeyType=std::string,
-              ValueType=User *
-          ]
-C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\UserDatabase.cpp(70): message : see reference to class template instantiation 'TreeMultimap<std::string,User *>::Iterator' being compiled
+﻿  Recommender.cpp
+C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\Recommender.cpp(159,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
   CS32 Proj 4.vcxproj -> C:\Users\xnear\source\repos\CS32 Proj 4\x64\Debug\CS32 Proj 4.exe

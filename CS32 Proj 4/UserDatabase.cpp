@@ -47,7 +47,6 @@ bool UserDatabase::load(const string& filename) // does not check for duplicate 
         else if (email == "") // if email
         {
             email = s;
-            cout << email << " loaded" << endl;
             continue; // next line
         } 
         else if (nMovies == "") // if number of movies

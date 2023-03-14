@@ -19,7 +19,7 @@ public:
             m_loc = 1;
         }
 
-        Iterator(const KeyType& key, std::vector<ValueType>& values)
+        Iterator(std::vector<ValueType>& values)
             : m_values(values)
         {
             m_v = &m_values.front();
@@ -45,7 +45,7 @@ public:
             if (!is_valid())
                 return;
 
-            m_values.pop_back();
+            m_v++;
             m_loc++;
         }
 
@@ -115,7 +115,7 @@ public:
         {
             if (key == cur->key)
             {
-                Iterator it(cur->key, cur->values);
+                Iterator it(cur->values);
                 return it;
             }
             else if (key < cur->key)
@@ -123,7 +123,6 @@ public:
             else
                 cur = cur->right;
         }
-
         Iterator it;
         return it;
     }
