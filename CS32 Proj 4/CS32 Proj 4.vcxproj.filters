@@ -41,6 +41,12 @@
     <Text Include="movies.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="testmovies.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="testusers.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

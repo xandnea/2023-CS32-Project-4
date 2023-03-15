@@ -136,6 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="movies.txt" />
+    <Text Include="testmovies.txt" />
+    <Text Include="testusers.txt" />
     <Text Include="users.txt" />
   </ItemGroup>
   <ItemGroup>

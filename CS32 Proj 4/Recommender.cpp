@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <algorithm>
 
 using namespace std;
 
@@ -24,8 +25,8 @@ Recommender::Recommender(const UserDatabase& user_database,
 vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int movie_count)
 {
     vector<MovieAndRank> ratings;
-    vector<string> ids;
-    vector<string>::iterator it = ids.begin();
+    map<string, int> compatability_scores;
+    map<string, int>::iterator it;
 
     User* user = m_userdata->get_user_from_email(user_email);
     vector<string> movieIDs = user->get_watch_history();
@@ -36,23 +37,26 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
     
     for (int i = 0; i < movies.size(); i++) // for each movie the user has watched
     {
-
         vector<string> directors = movies[i]->get_directors(); // vector of directors
+
         for (int j = 0; j < directors.size(); j++) // for each director in the movie
         {
             vector<Movie*> movies_with_director = m_moviedata->get_movies_with_director(directors[j]); // vector of movies w/ that director 
             for (int k = 0; k < movies_with_director.size(); k++) // for each movie that director has made
             {
-                MovieAndRank movieWithScore(movies_with_director[k]->get_id(), 20);
-                it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
-                if (it == ids.end())
+                string id = movies_with_director[k]->get_id();
+
+                if (find(movieIDs.begin(), movieIDs.end(), id) != movieIDs.end()) // if movie id is already in user's watch history, go to next movie
+                    continue;
+
+                it = compatability_scores.find(id);
+                if (it == compatability_scores.end()) // if not found in map
                 {
-                    ratings.push_back(movieWithScore);
-                    ids.push_back(movieWithScore.movie_id);
+                    compatability_scores.insert({ id, 20 });
                 }
                 else
                 {
-                    ratings[it - ids.begin()].compatibility_score += 20;
+                    compatability_scores[id] += 20;
                 }
                 
             }
@@ -64,16 +68,19 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
             vector<Movie*> movies_with_actor = m_moviedata->get_movies_with_actor(actors[j]); // vector of movies w/ that actor
             for (int k = 0; k < movies_with_actor.size(); k++)
             {
-                MovieAndRank movieWithScore(movies_with_actor[k]->get_id(), 30);
-                it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
-                if (it == ids.end())
+                string id = movies_with_actor[k]->get_id();
+
+                if (find(movieIDs.begin(), movieIDs.end(), id) != movieIDs.end()) // if movie id is already in user's watch history, go to next movie
+                    continue;
+
+                it = compatability_scores.find(id);
+                if (it == compatability_scores.end()) // if not found in map
                 {
-                    ratings.push_back(movieWithScore);
-                    ids.push_back(movieWithScore.movie_id);
+                    compatability_scores.insert({ id, 30 });
                 }
                 else
                 {
-                    ratings[it - ids.begin()].compatibility_score += 30;
+                    compatability_scores[id] += 30;
                 }
             }
         }
@@ -84,161 +91,60 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
             vector<Movie*> movies_with_genre = m_moviedata->get_movies_with_genre(genres[j]); // vector of movies w/ that genre 
             for (int k = 0; k < movies_with_genre.size(); k++)
             {
-                MovieAndRank movieWithScore(movies_with_genre[k]->get_id(), 1);
-                it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
-                if (it == ids.end())
+                string id = movies_with_genre[k]->get_id();
+
+                if (find(movieIDs.begin(), movieIDs.end(), id) != movieIDs.end()) // if movie id is already in user's watch history, go to next movie
+                    continue;
+
+                it = compatability_scores.find(id);
+                if (it == compatability_scores.end()) // if not found in map
                 {
-                    ratings.push_back(movieWithScore);
-                    ids.push_back(movieWithScore.movie_id);
+                    compatability_scores.insert({ id, 1 });
                 }
                 else
                 {
-                    ratings[it - ids.begin()].compatibility_score += 1;
+                    compatability_scores[id] += 1;
                 }
             }
         }
     }
 
+    it = compatability_scores.begin();
+    vector<MoviePointerAndRank> moviesWPAR;
 
-    multimap<int, MovieAndRank> sortedMovies;
-    multimap<int, MovieAndRank>::iterator itr = sortedMovies.begin();
-
-    for (int i = 0; i < ratings.size(); i++)
+    for (; it != compatability_scores.end(); it++) // copy map to MoviePointerAndRank vector 
     {
-        sortedMovies.insert({ ratings[i].compatibility_score, ratings[i] });
-    }
-
-    ratings.clear();
-
-    for (itr; itr != sortedMovies.end(); itr++)
-    {
-        // if id of movieandrank is not found in vector of users' watched movies and compatibility score is greater than 1
-        if (find(movieIDs.begin(), movieIDs.end(), itr->second.movie_id) == movieIDs.end() && itr->second.compatibility_score > 1) 
+        if (it->second >= 1)
         {
-            //cout << itr->second.movie_id << ", " << itr->second.compatibility_score << endl;
-            ratings.push_back(itr->second);
+            MoviePointerAndRank moviePointerAndRank(m_moviedata->get_movie_from_id(it->first), it->second);
+            moviesWPAR.push_back(moviePointerAndRank);
         }
     }
 
-    cout << "Ratings: " << endl;
-    for (int i = 0; i < ratings.size(); i++)
-        cout << ratings[i].movie_id << ", " << ratings[i].compatibility_score << endl;
+    sort(moviesWPAR.begin(), moviesWPAR.end(), compareMovies);
 
-    vector<MovieAndRank> output;
-    vector<MovieAndRank> temp;
-
-    for (int i = 1; i < ratings.size(); i++)
-    {   
-        // if comp score of i is greater than comp score of i + 1
-        if ((ratings[i - 1].compatibility_score > ratings[i].compatibility_score))
-        {
-            if (!temp.empty())
-            {
-                temp.push_back(ratings[i - 1]);
-
-                temp = sortByRating(temp);
-                for (int i = 0; i < temp.size(); i++)
-                {
-                    output.push_back(temp[i]);
-                }
-                temp.clear();
-            }
-            else
-                output.push_back(ratings[i - 1]); // push id of movie to output
-        }
-        else // if equal (can't be less than because it should be sorted) or there's a movie in the temp vector
-            temp.push_back(ratings[i - 1]);
-    }
-
-    vector<MovieAndRank> result;
-    int resultCount;
-    if (movie_count > output.size())
-        resultCount = output.size();
+    int count;
+    if (moviesWPAR.size() < movie_count)
+        count = moviesWPAR.size();
     else
-        resultCount = movie_count;
+        count = movie_count;
 
-    for (int i = 0; i < resultCount; i++)
-        result.push_back(output[i]);
-
-    return result;  // Replace this line with correct code.
-}
-
-vector<MovieAndRank> Recommender::sortByRating(vector<MovieAndRank>& input)
-{
-    vector<MovieAndRank> output;
-    vector<MovieAndRank> temp;
-    vector<Movie*> movies;
-
-    multimap<float, MovieAndRank> sortedRating;
-    multimap<float, MovieAndRank>::iterator itr1 = sortedRating.begin();
-    multimap<float, MovieAndRank>::iterator itr2 = sortedRating.begin();
-    itr2++;
-
-    for (int i = 0; i < input.size(); i++)
-        movies.push_back(m_moviedata->get_movie_from_id(input[i].movie_id));
-
-    for (int i = 0; i < movies.size(); i++) // insert into multimap to sort
-        sortedRating.insert({ movies[i]->get_rating(), input[i] });
-
-    for ( ; itr2 != sortedRating.end(); itr1++, itr2++)
+    for (int i = 0; i < count; i++) // copy MoviePointerAndRank vector into ratings for final result
     {
-        if (itr1->first == itr2->first) 
-            temp.push_back(itr1->second);
-        else
-        {
-            if (!temp.empty())
-            {
-                temp.push_back(itr1->second);
-                temp = sortByTitle(temp);
-                for (int i = 0; i < temp.size(); i++)
-                {
-                    output.push_back(temp[i]);
-                }
-                temp.clear();
-            }
-            else
-                output.push_back(itr1->second);
-        }
+        MovieAndRank movieAndRank(moviesWPAR[i].movieP->get_id(), moviesWPAR[i].rank);
+        ratings.push_back(movieAndRank);
     }
 
-    if (!temp.empty())
-    {
-        temp.push_back(itr1->second);
-        temp = sortByTitle(temp);
-        for (int i = 0; i < temp.size(); i++)
-        {
-            output.push_back(temp[i]);
-        }
-        temp.clear();
-    }
-
-    return output;
+    return ratings;  // Replace this line with correct code.
 }
 
-vector<MovieAndRank> Recommender::sortByTitle(vector<MovieAndRank>& input)
+/*static*/ bool Recommender::compareMovies(const MoviePointerAndRank& m1, const MoviePointerAndRank& m2)
 {
-    vector<MovieAndRank> output;
-    vector<MovieAndRank> temp;
-    vector<Movie*> movies;
-
-    multimap<string, MovieAndRank> sortedTitles;
-    multimap<string, MovieAndRank>::iterator itr = sortedTitles.begin();
-
-    for (int i = 0; i < input.size(); i++)
-        movies.push_back(m_moviedata->get_movie_from_id(input[i].movie_id));
-
-    for (int i = 0; i < movies.size(); i++) // insert into multimap to sort
-        sortedTitles.insert({ movies[i]->get_title(), input[i] });
-
-    for (; itr != sortedTitles.end(); itr++)
-    {
-        output.push_back(itr->second);
-    }
-
-    return output;
-}
-
-vector<MovieAndRank> sortByRating(vector<MovieAndRank>& input)
-{
-    return vector<MovieAndRank>();
+    //cout << "SORTING COMPAT" << endl;
+    if (m1.rank != m2.rank)
+        return m1.rank > m2.rank;
+    else if (m1.movieP->get_rating() != m2.movieP->get_rating())
+        return m1.movieP->get_rating() > m2.movieP->get_rating();
+    else 
+        return m1.movieP->get_title() < m2.movieP->get_title();
 }

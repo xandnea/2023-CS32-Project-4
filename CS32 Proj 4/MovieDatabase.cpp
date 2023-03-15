@@ -33,10 +33,32 @@ bool MovieDatabase::load(const string& filename)
     string s;
     while (getline(infile, s)) // can be optimized if needed 
     {
-        if (id == "") // if id
+        if (s == "" || infile.eof()) // if new line
+        {
+            if (infile.eof())
+                rating = stof(s);
+
+            Movie* movie = new Movie(id, title, year, directors, actors, genres, rating);
+            m_pointers.push_back(movie);
+
+            insert_to_tmm(m_movies, id, movie);
+            insert_to_tmm(m_directors, directors, movie);
+            insert_to_tmm(m_actors, actors, movie);
+            insert_to_tmm(m_genres, genres, movie);
+
+            id = "";
+            title = "";
+            year = "";
+            directors = "";
+            actors = "";
+            genres = "";
+            rating = -1;
+            continue;
+        }
+        else if (id == "") // if id
         {
             id = s;
-            cout << id << endl;
+            //cout << id << endl;
             continue; // next line
         }
         else if (title  == "") // if title
@@ -71,27 +93,8 @@ bool MovieDatabase::load(const string& filename)
         }
         else if (rating == -1)
         {
-            rating = stoi(s);
+            rating = stof(s);
             //cout << rating << endl;
-            continue;
-        }
-        else if (s == "") // if new line
-        {
-            Movie* movie = new Movie(id, title, year, directors, actors, genres, rating);
-
-            // create vector of movie pointers and delete each movie pointer in destructor
-            insert_to_tmm(m_movies, id, movie);
-            insert_to_tmm(m_directors, directors, movie);
-            insert_to_tmm(m_actors, actors, movie);
-            insert_to_tmm(m_genres, genres, movie);
-
-            id = "";
-            title = "";
-            year = "";
-            directors = "";
-            actors = "";
-            genres = "";
-            rating = -1;
             continue;
         }
     }
@@ -167,6 +170,8 @@ void MovieDatabase::insert_to_tmm(TreeMultimap<string, Movie*>& tmm, string inpu
     string s = input;
     string temp = "";
 
+    //cerr << "MOVIE ADDED\n" << movie->get_id() << "\n" << movie->get_title() << "\n" << movie->get_release_year() << "\n";
+
     if (s.find(',') == string::npos) // if comma not found in string
     {
         tmm.insert(s, movie);
@@ -195,4 +200,10 @@ string MovieDatabase::to_lower(const string& input)
     for (int i = 0; i < input.size(); i++)
         temp.at(i) = tolower(temp.at(i));
     return temp;
+}
+
+MovieDatabase::~MovieDatabase()
+{
+    for (int i = 0; i < m_pointers.size(); i++)
+        delete m_pointers[i];
 }

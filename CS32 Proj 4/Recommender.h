@@ -28,11 +28,23 @@ public:
         int movie_count);
 
 private:
-    const UserDatabase* m_userdata; // might need to be a pointer
+    struct MoviePointerAndRank
+    {
+        MoviePointerAndRank(Movie* movie, int score)
+            : movieP(movie), rank(score)
+        {}
+
+        Movie* movieP;
+        int rank;
+    };
+
+    const UserDatabase* m_userdata;
     const MovieDatabase* m_moviedata;
 
-    std::vector<MovieAndRank> sortByRating(std::vector<MovieAndRank>& input);
-    std::vector<MovieAndRank> sortByTitle(std::vector<MovieAndRank>& input);
+    //const UserDatabase* getUDB() { return m_userdata; }
+    //const MovieDatabase* getMDB() { return m_moviedata; }
+
+    static bool compareMovies(const MoviePointerAndRank& m1, const MoviePointerAndRank& m2);
 };
 
 #endif // RECOMMENDER_INCLUDED

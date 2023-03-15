@@ -1,24 +1,3 @@
-﻿  MovieDatabase.cpp
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\MovieDatabase.cpp(74,26): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(26,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(22): message : while compiling class template member function 'TreeMultimap<std::string,Movie *>::Iterator::Iterator(std::vector<Movie *,std::allocator<Movie *>> &)'
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(120): message : see reference to function template instantiation 'TreeMultimap<std::string,Movie *>::Iterator::Iterator(std::vector<Movie *,std::allocator<Movie *>> &)' being compiled
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\MovieDatabase.cpp(102): message : see reference to class template instantiation 'TreeMultimap<std::string,Movie *>::Iterator' being compiled
-  Recommender.cpp
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\Recommender.cpp(156,36): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-  UserDatabase.cpp
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(26,1): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(22): message : while compiling class template member function 'TreeMultimap<std::string,User *>::Iterator::Iterator(std::vector<ValueType,std::allocator<ValueType>> &)'
-          with
-          [
-              ValueType=User *
-          ]
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\treemm.h(120): message : see reference to function template instantiation 'TreeMultimap<std::string,User *>::Iterator::Iterator(std::vector<ValueType,std::allocator<ValueType>> &)' being compiled
-          with
-          [
-              ValueType=User *
-          ]
-C:\Users\xandn\source\repos\2023-CS32-Project-4\CS32 Proj 4\UserDatabase.cpp(71): message : see reference to class template instantiation 'TreeMultimap<std::string,User *>::Iterator' being compiled
-  main.cpp
-  Generating Code...
-  CS32 Proj 4.vcxproj -> C:\Users\xandn\source\repos\2023-CS32-Project-4\x64\Debug\CS32 Proj 4.exe
+﻿  Recommender.cpp
+C:\Users\xnear\source\repos\CS32 Proj 4\CS32 Proj 4\Recommender.cpp(145,34): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+  CS32 Proj 4.vcxproj -> C:\Users\xnear\source\repos\CS32 Proj 4\x64\Debug\CS32 Proj 4.exe

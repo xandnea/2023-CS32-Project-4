@@ -17,6 +17,7 @@ public:
     std::vector<Movie*> get_movies_with_director(const std::string& director) const;
     std::vector<Movie*> get_movies_with_actor(const std::string& actor) const;
     std::vector<Movie*> get_movies_with_genre(const std::string& genre) const;
+    ~MovieDatabase();
 
 private:
     std::string m_id;
@@ -24,6 +25,8 @@ private:
     TreeMultimap<std::string, Movie*> m_directors;
     TreeMultimap<std::string, Movie*> m_actors;
     TreeMultimap<std::string, Movie*> m_genres;
+
+    std::vector<Movie*> m_pointers;
 
     void insert_to_tmm(TreeMultimap<std::string, Movie*>& tmm, std::string, Movie* movie);
     std::string to_lower(const std::string& input);

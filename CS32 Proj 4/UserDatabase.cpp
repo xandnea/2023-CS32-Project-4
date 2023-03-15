@@ -29,9 +29,13 @@ bool UserDatabase::load(const string& filename) // does not check for duplicate 
     string s;
     while (getline(infile, s)) // can be optimized if needed
     {
-        if (s == "") // if new line
+        if (s == "" || infile.eof()) // if new line
         {
+            if (infile.eof())
+                watch_history.push_back(s);
+
             User* user = new User(full_name, email, watch_history);
+            m_pointers.push_back(user);
             m_users.insert(email, user);
 
             full_name = "";
@@ -73,5 +77,10 @@ User* UserDatabase::get_user_from_email(const string& email) const
         return it.get_value();
     else
         return nullptr;
-    //return m_users.find(email).get_value(); // sets userP(ointer) to the pointer returned by get_value()
+}
+
+UserDatabase::~UserDatabase()
+{
+    for (int i = 0; i < m_pointers.size(); i++)
+        delete m_pointers[i];
 }

@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
 using namespace std;
 
 //////////////////////////i/////////////////////////////////////////////////////
@@ -33,6 +34,8 @@ const string MOVIE_DATAFILE = "movies.txt";
 
 void findMatches(const Recommender& rec, const MovieDatabase& md, const string& user_email)
 {
+	auto start = chrono::steady_clock::now();
+
 	Recommender r = rec;
 
 	int num_recommendations;
@@ -40,7 +43,7 @@ void findMatches(const Recommender& rec, const MovieDatabase& md, const string& 
 	cin >> num_recommendations;
 
 	// get up to ten movie recommendations for the user
-	vector<MovieAndRank> recommendations = r.recommend_movies(user_email, 10);
+	vector<MovieAndRank> recommendations = r.recommend_movies(user_email, num_recommendations);
 	if (recommendations.empty())
 		cout << "We found no movies to recommend :(.\n";
 	else
@@ -48,20 +51,33 @@ void findMatches(const Recommender& rec, const MovieDatabase& md, const string& 
 		for (int i = 0; i < recommendations.size(); i++) {
 			const MovieAndRank& mr = recommendations[i];
 			Movie* m = md.get_movie_from_id(mr.movie_id);
-			cout << i << ". " << m->get_title() << " ("
+			cout << i + 1 << ". " << m->get_title() << " ("
 				<< m->get_release_year() << ")\n Rating: "
 				<< m->get_rating() << "\n Compatibility Score: "
 				<< mr.compatibility_score << "\n";
 		}
 	}
+
+	auto stop = chrono::steady_clock::now();
+
+	cout << "Took " << (chrono::duration_cast<chrono::milliseconds>(stop - start).count()) << "ms" << endl;
 }
 
 int main()
 {
+	auto startudb = chrono::steady_clock::now();
 	UserDatabase udb;
 	udb.load(USER_DATAFILE);
+	cerr << "User database loaded" << endl;
+	auto stopudb = chrono::steady_clock::now();
+	cout << "Took " << (chrono::duration_cast<chrono::milliseconds>(stopudb - startudb).count()) << "ms" << endl;
+
+	auto startmdb = chrono::steady_clock::now();
 	MovieDatabase mdb;
 	mdb.load(MOVIE_DATAFILE);
+	cerr << "Movie database loaded" << endl;
+	auto stopmdb = chrono::steady_clock::now();
+	cout << "Took " << (chrono::duration_cast<chrono::milliseconds>(stopmdb - startmdb).count()) << "ms" << endl;
 
 	/*cout << "Get watch history from user (enter email): ";
 	string ans;
@@ -71,8 +87,11 @@ int main()
 	for (int i = 0; i < u->get_watch_history().size(); i++)
 		cout << u->get_watch_history()[i] << endl;*/
 
-	/*Recommender r(udb, mdb);
-	findMatches(r, mdb, "BrunB@yahoo.com");*/
+	
+
+	Recommender r(udb, mdb);
+	findMatches(r, mdb, "HezekF0394@aol.com"); //climberkip@gmail.com MarWon194@inbox.com CoenMa133@zoho.com
+	
 	
 
 	////USER DATABASE TESTING//

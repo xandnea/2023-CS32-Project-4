@@ -79,6 +79,7 @@ vector<string> Movie::string_to_vector(const string &input)
             temp = "";
         }
     }
+    output.push_back(temp);
 
     return output;
 }

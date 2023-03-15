@@ -4,12 +4,12 @@
 #include <iostream>
 #include <vector>
 
+#include <iostream>
+
 template <typename KeyType, typename ValueType>
 class TreeMultimap
 {
 public:
-    struct Node;
-
     class Iterator
     {
     public:
@@ -68,8 +68,6 @@ public:
 
     void insert(const KeyType& key, const ValueType& value)
     {
-        std::cerr << "new item \n";
-
         if (m_root == nullptr)
         {
             m_root = new Node(key, value);
