@@ -63,8 +63,16 @@ int main()
 	MovieDatabase mdb;
 	mdb.load(MOVIE_DATAFILE);
 
-	Recommender r(udb, mdb);
-	findMatches(r, mdb, "BrunB@yahoo.com");
+	/*cout << "Get watch history from user (enter email): ";
+	string ans;
+	getline(cin, ans);
+	User* u = udb.get_user_from_email(ans);
+
+	for (int i = 0; i < u->get_watch_history().size(); i++)
+		cout << u->get_watch_history()[i] << endl;*/
+
+	/*Recommender r(udb, mdb);
+	findMatches(r, mdb, "BrunB@yahoo.com");*/
 	
 
 	////USER DATABASE TESTING//

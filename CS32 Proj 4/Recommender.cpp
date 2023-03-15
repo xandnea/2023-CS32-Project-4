@@ -11,8 +11,8 @@
 
 using namespace std;
 
-vector<MovieAndRank> sortByRating(vector<MovieAndRank>& input);
-vector<MovieAndRank> sortByTitle(vector<MovieAndRank>& input);
+//vector<MovieAndRank> sortByRating(vector<MovieAndRank>& input);
+//vector<MovieAndRank> sortByTitle(vector<MovieAndRank>& input);
 
 Recommender::Recommender(const UserDatabase& user_database,
     const MovieDatabase& movie_database)
@@ -36,13 +36,14 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
     
     for (int i = 0; i < movies.size(); i++) // for each movie the user has watched
     {
+
         vector<string> directors = movies[i]->get_directors(); // vector of directors
         for (int j = 0; j < directors.size(); j++) // for each director in the movie
         {
             vector<Movie*> movies_with_director = m_moviedata->get_movies_with_director(directors[j]); // vector of movies w/ that director 
             for (int k = 0; k < movies_with_director.size(); k++) // for each movie that director has made
             {
-                MovieAndRank movieWithScore(movies_with_director[i]->get_id(), 20);
+                MovieAndRank movieWithScore(movies_with_director[k]->get_id(), 20);
                 it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
                 if (it == ids.end())
                 {
@@ -63,7 +64,7 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
             vector<Movie*> movies_with_actor = m_moviedata->get_movies_with_actor(actors[j]); // vector of movies w/ that actor
             for (int k = 0; k < movies_with_actor.size(); k++)
             {
-                MovieAndRank movieWithScore(movies_with_actor[i]->get_id(), 30);
+                MovieAndRank movieWithScore(movies_with_actor[k]->get_id(), 30);
                 it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
                 if (it == ids.end())
                 {
@@ -83,7 +84,7 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
             vector<Movie*> movies_with_genre = m_moviedata->get_movies_with_genre(genres[j]); // vector of movies w/ that genre 
             for (int k = 0; k < movies_with_genre.size(); k++)
             {
-                MovieAndRank movieWithScore(movies_with_genre[i]->get_id(), 1);
+                MovieAndRank movieWithScore(movies_with_genre[k]->get_id(), 1);
                 it = find(ids.begin(), ids.end(), movieWithScore.movie_id);
                 if (it == ids.end())
                 {
@@ -114,13 +115,14 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
         // if id of movieandrank is not found in vector of users' watched movies and compatibility score is greater than 1
         if (find(movieIDs.begin(), movieIDs.end(), itr->second.movie_id) == movieIDs.end() && itr->second.compatibility_score > 1) 
         {
+            //cout << itr->second.movie_id << ", " << itr->second.compatibility_score << endl;
             ratings.push_back(itr->second);
         }
     }
 
-    /*cout << "Ratings: " << endl;
+    cout << "Ratings: " << endl;
     for (int i = 0; i < ratings.size(); i++)
-        cout << ratings[i].movie_id << ", " << ratings[i].compatibility_score << endl;*/
+        cout << ratings[i].movie_id << ", " << ratings[i].compatibility_score << endl;
 
     vector<MovieAndRank> output;
     vector<MovieAndRank> temp;
@@ -133,11 +135,6 @@ vector<MovieAndRank> Recommender::recommend_movies(const string& user_email, int
             if (!temp.empty())
             {
                 temp.push_back(ratings[i - 1]);
-                
-                /*for (int i = 0; i < temp.size(); i++)
-                {
-                    cout << temp[i].movie_id << endl;
-                }*/
 
                 temp = sortByRating(temp);
                 for (int i = 0; i < temp.size(); i++)
@@ -239,4 +236,9 @@ vector<MovieAndRank> Recommender::sortByTitle(vector<MovieAndRank>& input)
     }
 
     return output;
+}
+
+vector<MovieAndRank> sortByRating(vector<MovieAndRank>& input)
+{
+    return vector<MovieAndRank>();
 }

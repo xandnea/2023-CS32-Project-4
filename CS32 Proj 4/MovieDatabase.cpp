@@ -8,8 +8,6 @@
 
 using namespace std;
 
-string to_lower(const string& input);
-
 MovieDatabase::MovieDatabase()
 {
     
@@ -33,12 +31,12 @@ bool MovieDatabase::load(const string& filename)
     float rating = -1;
 
     string s;
-    while (getline(infile, s)) // can be optimized if needed
+    while (getline(infile, s)) // can be optimized if needed 
     {
         if (id == "") // if id
         {
             id = s;
-            //cout << id << endl;
+            cout << id << endl;
             continue; // next line
         }
         else if (title  == "") // if title
@@ -80,6 +78,8 @@ bool MovieDatabase::load(const string& filename)
         else if (s == "") // if new line
         {
             Movie* movie = new Movie(id, title, year, directors, actors, genres, rating);
+
+            // create vector of movie pointers and delete each movie pointer in destructor
             insert_to_tmm(m_movies, id, movie);
             insert_to_tmm(m_directors, directors, movie);
             insert_to_tmm(m_actors, actors, movie);

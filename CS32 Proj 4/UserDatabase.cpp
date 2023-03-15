@@ -36,6 +36,7 @@ bool UserDatabase::load(const string& filename) // does not check for duplicate 
 
             full_name = "";
             email = "";
+            nMovies = "";
             watch_history.clear();
             continue;
         }
@@ -51,6 +52,7 @@ bool UserDatabase::load(const string& filename) // does not check for duplicate 
         } 
         else if (nMovies == "") // if number of movies
         {
+            nMovies = s;
             continue;
         }
         else

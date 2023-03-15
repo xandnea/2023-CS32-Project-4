@@ -2,9 +2,9 @@
 
 #include <string>
 #include <vector>
-using namespace std;
+#include <iostream>
 
-vector<string> string_to_vector(const string& input);
+using namespace std;
 
 Movie::Movie(const string& id, const string& title,
     const string& release_year, const string& directors,
@@ -14,7 +14,6 @@ Movie::Movie(const string& id, const string& title,
     m_title = title;
     m_release_year = release_year;
     m_rating = rating;
-
     
     m_directors = string_to_vector(directors);
     m_actors = string_to_vector(actors);

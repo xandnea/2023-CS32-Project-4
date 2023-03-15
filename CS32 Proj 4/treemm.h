@@ -68,6 +68,8 @@ public:
 
     void insert(const KeyType& key, const ValueType& value)
     {
+        std::cerr << "new item \n";
+
         if (m_root == nullptr)
         {
             m_root = new Node(key, value);
